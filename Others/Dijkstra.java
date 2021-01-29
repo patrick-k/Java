@@ -1,5 +1,7 @@
 package Others;
 
+import java.util.*;
+
 /**
  * Dijkstra's algorithm,is a graph search algorithm that solves the single-source shortest path
  * problem for a graph with nonnegative edge path costs, producing a shortest path tree.
@@ -10,16 +12,13 @@ package Others;
  * <p>Original source of code: https://rosettacode.org/wiki/Dijkstra%27s_algorithm#Java Also most of
  * the comments are from RosettaCode.
  */
-import java.util.*;
-
 public class Dijkstra {
-  private static final Graph.Edge[] GRAPH = {
+  protected static final Graph.Edge[] GRAPH = {
     // Distance from node "a" to node "b" is 7.
     // In the current Graph there is no way to move the other way (e,g, from "b" to "a"),
     // a new edge would be needed for that
     new Graph.Edge("a", "b", 7),
     new Graph.Edge("a", "c", 9),
-    new Graph.Edge("a", "f", 14),
     new Graph.Edge("b", "c", 10),
     new Graph.Edge("b", "d", 15),
     new Graph.Edge("c", "d", 11),
@@ -36,6 +35,13 @@ public class Dijkstra {
     g.dijkstra(START);
     g.printPath(END);
     // g.printAllPaths();
+  }
+
+  public static Graph initializeGraph(String startNode) {
+    Graph g = new Graph(GRAPH);
+    g.dijkstra(startNode);
+
+    return g;
   }
 }
 
@@ -67,15 +73,21 @@ class Graph {
       this.name = name;
     }
 
-    private void printPath() {
+    private String printPath() {
+      StringBuilder sb = new StringBuilder();
       if (this == this.previous) {
-        System.out.printf("%s", this.name);
+        sb.append(String.format("%s", this.name));
+        System.out.print(sb.toString());
       } else if (this.previous == null) {
+        sb.append(String.format("%s(unreached)", this.name));
         System.out.printf("%s(unreached)", this.name);
       } else {
-        this.previous.printPath();
+        sb.append(this.previous.printPath());
+        sb.append(String.format(" -> %s(%d)", this.name, this.dist));
         System.out.printf(" -> %s(%d)", this.name, this.dist);
       }
+
+      return sb.toString();
     }
 
     public int compareTo(Vertex other) {
@@ -180,14 +192,15 @@ class Graph {
   }
 
   /** Prints a path from the source to the specified vertex */
-  public void printPath(String endName) {
+  public String printPath(String endName) {
     if (!graph.containsKey(endName)) {
       System.err.printf("Graph doesn't contain end vertex \"%s\"%n", endName);
-      return;
+      return null;
     }
 
-    graph.get(endName).printPath();
-    System.out.println();
+    String result = graph.get(endName).printPath();
+    System.out.println(result);
+    return result;
   }
 
   /** Prints the path from the source to every vertex (output order is not guaranteed) */
