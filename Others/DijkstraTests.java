@@ -1,7 +1,6 @@
 package Others;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -17,11 +16,13 @@ import org.junit.runners.JUnit4;
  *
  * {methodUnderTest}_{InputBehaviors}_{ExpectedOutcome}
  *
- * Tests will target the two equivalence classes partitioned
- * from the input domain.
+ * Tests will target the equivalence classes partitioned
+ * from the input domain D of function printPath.
  *
- *  D1 - Path from source node s -> destination node d exists
- *  D2 - Path from s -> d does not exist
+ *  D = all possible destination nodes.
+ *  b1 - destination node d exists and path from source node s -> d exists
+ *  b2 - destination node d exists and path from s -> d does not exist
+ *  b3 - destination node d does not exist
  */
 @RunWith(JUnit4.class)
 public class DijkstraTests {
@@ -37,7 +38,7 @@ public class DijkstraTests {
     }
 
     @Test
-    public void printPath_MultiplePathsExist_TakesShortestPath() {
+    public void printPath_PathsExist_TakesShortestPath() {
         graph = Dijkstra.initializeGraph("a");
 
         // should take shortest path a -> c -> f instead of a -> b -> c -> f etc...
@@ -53,6 +54,14 @@ public class DijkstraTests {
         String nonExistentEndNode = "g";
 
         String result = graph.printPath(nonExistentEndNode);
+        Assert.assertNull(result);
+    }
+
+    @Test
+    public void printPath_DestNodeIsNull_PrintsErrorMessage() {
+        graph = Dijkstra.initializeGraph("a");
+
+        String result = graph.printPath(null);
         Assert.assertNull(result);
     }
 
